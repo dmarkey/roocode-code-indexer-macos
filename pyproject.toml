@@ -31,6 +31,9 @@ roocode-indexer = "roocode_indexer.server:main"
 Homepage = "https://github.com/dmarkey/roocode-code-indexer-macos"
 Repository = "https://github.com/dmarkey/roocode-code-indexer-macos"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/roocode_indexer"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
