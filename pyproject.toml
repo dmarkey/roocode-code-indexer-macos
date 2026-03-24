@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.scripts]
-roocode-indexer = "roocode_indexer.server:main"
+roocode-code-indexer-macos = "roocode_indexer.server:main"
 
 [project.urls]
 Homepage = "https://github.com/dmarkey/roocode-code-indexer-macos"
