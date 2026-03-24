@@ -770,7 +770,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Roo Code Indexer",
     description="OpenAI-compatible embedding server for Roo Code on Apple Silicon",
-    version="0.1.1",
+    version="0.1.2",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",

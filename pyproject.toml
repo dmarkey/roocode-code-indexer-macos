@@ -1,6 +1,6 @@
 [project]
 name = "roocode-code-indexer-macos"
-version = "0.1.1"
+version = "0.1.2"
 description = "High-performance OpenAI-compatible embedding server for Roo Code indexing on Apple Silicon"
 readme = "README.md"
 requires-python = ">=3.10"
