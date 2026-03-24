@@ -25,7 +25,7 @@ uvx roocode-code-indexer-macos --model mlx-community/Qwen3-Embedding-4B-4bit-DWQ
 In Roo Code settings, set the embedding provider to OpenAI-compatible and point it at:
 
 ```
-http://localhost:8000/v1/embeddings
+http://localhost:8000/v1
 ```
 
 ## Available Models
