@@ -7,13 +7,13 @@ Runs Qwen3 embedding models locally via MLX with optimized batched GPU inference
 ## Quick Start
 
 ```bash
-uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-indexer
+uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-code-indexer-macos
 ```
 
 Or with a specific model:
 
 ```bash
-uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-indexer \
+uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-code-indexer-macos \
   --model mlx-community/Qwen3-Embedding-4B-4bit-DWQ --port 8000
 ```
 
