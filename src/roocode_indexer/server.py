@@ -121,7 +121,7 @@ class ModelManager:
         self._embedding_cache: OrderedDict[int, Tuple[np.ndarray, int]] = OrderedDict()  # hash -> (embedding, token_count)
         self._cache_max_size = 2000
         self._global_lock = asyncio.Lock()  # For managing model dict
-        self.max_loaded_models = 2  # Maximum models to keep in memory
+        self.max_loaded_models = int(os.getenv("MAX_LOADED_MODELS", "2"))
         # Compiled inference functions per model (populated on first use)
         self._compiled_fns: Dict[str, Any] = {}
         # Cached causal masks by padded length

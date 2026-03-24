@@ -81,6 +81,7 @@ Ollama has no embedding cache — every re-index pays full inference cost.
 | `MAX_BATCH_SIZE` | `1024` | Max texts per batch |
 | `MAX_TEXT_LENGTH` | `8192` | Max tokens per text |
 | `LOG_LEVEL` | `INFO` | Logging level |
+| `MAX_LOADED_MODELS` | `2` | Max models in memory (reduce to 1 on 8GB machines) |
 
 ## Requirements
 
