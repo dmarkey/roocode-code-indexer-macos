@@ -1,0 +1,36 @@
+[project]
+name = "roocode-code-indexer-macos"
+version = "0.1.0"
+description = "High-performance OpenAI-compatible embedding server for Roo Code indexing on Apple Silicon"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "David Markey" },
+]
+keywords = ["embeddings", "mlx", "apple-silicon", "roo-code", "openai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "mlx>=0.20",
+    "mlx-lm>=0.20",
+    "numpy",
+    "fastapi>=0.100",
+    "uvicorn[standard]",
+    "pydantic>=2.0",
+]
+
+[project.scripts]
+roocode-indexer = "roocode_indexer.server:main"
+
+[project.urls]
+Homepage = "https://github.com/dmarkey/roocode-code-indexer-macos"
+Repository = "https://github.com/dmarkey/roocode-code-indexer-macos"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
