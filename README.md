@@ -2,7 +2,7 @@
 
 High-performance OpenAI-compatible embedding server for [Roo Code](https://docs.roocode.com/) codebase indexing on Apple Silicon.
 
-Runs Qwen3 embedding models locally via MLX with optimized batched GPU inference — no API keys needed. **~5x faster than Ollama** for the same models.
+Runs Qwen3 embedding models locally via MLX with optimized batched GPU inference — no API keys needed. **Up to 5x faster than Ollama** for the same models.
 
 ## Quick Start
 
@@ -37,29 +37,32 @@ Models are downloaded automatically from HuggingFace on first use.
 
 ## Benchmarks: MLX vs Ollama
 
-Tested with real Roo Code indexing traffic: 10 concurrent requests of 60 texts each (541 texts total), simulating a typical codebase indexing burst.
+Synthetic code-like text data (10 concurrent requests x 60 texts = 600 texts), simulating Roo Code's indexing burst pattern. Reproducible via `python benchmark.py`.
 
 ### Cold cache (first indexing run)
 
 | Server | Wall time | texts/sec | vs Ollama |
 |--------|----------|-----------|-----------|
-| Ollama qwen3-embedding:8b | 74.8s | 7 | baseline |
-| Ollama qwen3-embedding:4b | 43.3s | 13 | 1.7x |
-| **MLX Qwen3-Embedding-4B** | **9.1s** | **60** | **4.8x faster** |
-| **MLX Qwen3-Embedding-8B** | **20.9s** | **26** | **3.6x faster** |
+| Ollama qwen3-embedding:0.6b | 9.0s | 67 | baseline |
+| Ollama qwen3-embedding:4b | 50.9s | 12 | 0.2x |
+| Ollama qwen3-embedding:8b | errors | - | crashed under load |
+| **MLX Qwen3-Embedding-0.6B** | **1.8s** | **337** | **5x faster** |
+| **MLX Qwen3-Embedding-4B** | **9.0s** | **67** | **5.7x faster** |
+| **MLX Qwen3-Embedding-8B** | **15.2s** | **39** | - |
 
 ### Warm cache (re-indexing with overlapping files)
 
 | Server | Wall time | texts/sec |
 |--------|----------|-----------|
-| MLX Qwen3-Embedding-4B | 90ms | 6,001 |
-| MLX Qwen3-Embedding-8B | 147ms | 3,675 |
+| MLX Qwen3-Embedding-0.6B | 42ms | 14,414 |
+| MLX Qwen3-Embedding-4B | 95ms | 6,340 |
+| MLX Qwen3-Embedding-8B | 146ms | 4,106 |
 
 Ollama has no embedding cache — every re-index pays full inference cost.
 
 ### Why is MLX faster?
 
-- **Request coalescing** — concurrent requests are merged into single GPU batches instead of queuing
+- **Request coalescing** — concurrent requests are merged into single GPU batches instead of queuing serially
 - **Length-bucketed sub-batching** — minimizes padding waste across variable-length texts
 - **Compiled Metal kernels** — `mx.compile` with fixed padding buckets for graph reuse
 - **LRU embedding cache** — repeated texts skip inference entirely
