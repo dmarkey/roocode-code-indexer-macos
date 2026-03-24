@@ -10,10 +10,11 @@ Runs Qwen3 embedding models locally via MLX with optimized batched GPU inference
 uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-indexer
 ```
 
-Or with options:
+Or with a specific model:
 
 ```bash
-uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-indexer --model medium --port 8000
+uvx --from git+https://github.com/dmarkey/roocode-code-indexer-macos roocode-indexer \
+  --model mlx-community/Qwen3-Embedding-4B-4bit-DWQ --port 8000
 ```
 
 ## Roo Code Configuration
@@ -26,13 +27,13 @@ http://localhost:8000/v1/embeddings
 
 ## Available Models
 
-| Alias | Model | Dim | Description |
-|-------|-------|-----|-------------|
-| `small` | Qwen3-Embedding-0.6B-4bit | 1024 | Fast, good for small codebases |
-| `medium` | Qwen3-Embedding-4B-4bit | 2560 | Recommended — best speed/quality tradeoff |
-| `large` | Qwen3-Embedding-8B-4bit | 4096 | Highest quality, slower |
+| Model | Embedding Dim | Size | Description |
+|-------|--------------|------|-------------|
+| `mlx-community/Qwen3-Embedding-0.6B-4bit-DWQ` | 1024 | ~900MB | Fast, good for small codebases (default) |
+| `mlx-community/Qwen3-Embedding-4B-4bit-DWQ` | 2560 | ~2.5GB | Recommended — best speed/quality tradeoff |
+| `mlx-community/Qwen3-Embedding-8B-4bit-DWQ` | 4096 | ~4.5GB | Highest quality, slower |
 
-Default model is `small`. Use `--model medium` for the recommended balance.
+Models are downloaded automatically from HuggingFace on first use.
 
 ## Performance
 
@@ -48,9 +49,9 @@ Typical performance on Apple Silicon (M-series):
 
 | Model | Single request (60 texts) | 4 requests coalesced |
 |-------|--------------------------|---------------------|
-| small (0.6B) | ~200ms | ~400ms |
-| medium (4B) | ~2s | ~4-5s |
-| large (8B) | ~3s | ~8-9s |
+| Qwen3-Embedding-0.6B | ~200ms | ~400ms |
+| Qwen3-Embedding-4B | ~2s | ~4-5s |
+| Qwen3-Embedding-8B | ~3s | ~8-9s |
 
 ## Environment Variables
 
@@ -67,7 +68,6 @@ Typical performance on Apple Silicon (M-series):
 
 - macOS with Apple Silicon (M1/M2/M3/M4)
 - Python 3.10+
-- Models are downloaded automatically from HuggingFace on first use
 
 ## License
 

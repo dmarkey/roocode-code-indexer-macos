@@ -36,30 +36,12 @@ import uvicorn
 # Constants
 DEFAULT_MODEL = "mlx-community/Qwen3-Embedding-0.6B-4bit-DWQ"
 
-# Available models configuration
+# Available models and their embedding dimensions
 AVAILABLE_MODELS = {
-    "mlx-community/Qwen3-Embedding-0.6B-4bit-DWQ": {
-        "alias": ["small", "0.6b", "default"],
-        "embedding_dim": 1024,
-        "description": "Small 0.6B parameter model, fast and efficient"
-    },
-    "mlx-community/Qwen3-Embedding-4B-4bit-DWQ": {
-        "alias": ["medium", "4b"],
-        "embedding_dim": 2560,
-        "description": "Medium 4B parameter model, balanced performance"
-    },
-    "mlx-community/Qwen3-Embedding-8B-4bit-DWQ": {
-        "alias": ["large", "8b"],
-        "embedding_dim": 4096,
-        "description": "Large 8B parameter model, higher quality embeddings"
-    }
+    "mlx-community/Qwen3-Embedding-0.6B-4bit-DWQ": {"embedding_dim": 1024},
+    "mlx-community/Qwen3-Embedding-4B-4bit-DWQ": {"embedding_dim": 2560},
+    "mlx-community/Qwen3-Embedding-8B-4bit-DWQ": {"embedding_dim": 4096},
 }
-
-# Build alias mapping
-MODEL_ALIASES = {}
-for model_name, config in AVAILABLE_MODELS.items():
-    for alias in config.get("alias", []):
-        MODEL_ALIASES[alias.lower()] = model_name
 MIN_BATCH_SIZE = 1
 DEFAULT_MAX_BATCH = 1024  # Increased for stress testing
 DEFAULT_MAX_LENGTH = 8192
@@ -149,27 +131,23 @@ class ModelManager:
         self._coalescer_task: Optional[asyncio.Task] = None
         
     def _resolve_model_name(self, model_identifier: Optional[str] = None) -> str:
-        """Resolve model identifier to actual model name"""
+        """Resolve and validate model name."""
         if not model_identifier:
             return self.config.model_name
-        
-        # Check if it's an alias
-        model_lower = model_identifier.lower()
-        if model_lower in MODEL_ALIASES:
-            return MODEL_ALIASES[model_lower]
-        
-        # Check if it's a valid model name
+
         if model_identifier in AVAILABLE_MODELS:
             return model_identifier
-        
-        # Invalid model
-        raise ValueError(f"Unknown model: {model_identifier}. Available: {list(AVAILABLE_MODELS.keys())}")
+
+        raise ValueError(
+            f"Unknown model: {model_identifier}. "
+            f"Available: {list(AVAILABLE_MODELS.keys())}"
+        )
     
     async def load_model(self, model_name: Optional[str] = None) -> str:
         """Load and initialize the specified embedding model
         
         Args:
-            model_name: Model name or alias. If None, uses default.
+            model_name: Full HuggingFace model name. If None, uses default.
             
         Returns:
             The resolved model name
@@ -678,27 +656,21 @@ class ModelManager:
                 "model_name": model_name,
                 "embedding_dim": AVAILABLE_MODELS[model_name]["embedding_dim"],
                 "load_time": self.model_load_times.get(model_name),
-                "description": AVAILABLE_MODELS[model_name]["description"]
             }
-        
-        # Return status for all models
+
         models_status = {}
         for name in AVAILABLE_MODELS:
             models_status[name] = {
                 "status": self.model_status.get(name, ModelStatus.UNLOADED).value,
                 "embedding_dim": AVAILABLE_MODELS[name]["embedding_dim"],
                 "load_time": self.model_load_times.get(name),
-                "aliases": AVAILABLE_MODELS[name]["alias"],
-                "description": AVAILABLE_MODELS[name]["description"]
             }
-        
+
         return {
             "loaded_models": list(self.models.keys()),
             "default_model": self.config.model_name,
-            "max_batch_size": self.config.max_batch_size,
-            "max_text_length": self.config.max_text_length,
             "cache_size": len(self._embedding_cache),
-            "models": models_status
+            "models": models_status,
         }
 
 # Initialize model manager
@@ -714,8 +686,8 @@ class OpenAIEmbeddingRequest(BaseModel):
         description="Input text(s) to embed. Can be a string or array of strings."
     )
     model: str = Field(
-        default="small",
-        description="Model to use (name or alias)"
+        default="mlx-community/Qwen3-Embedding-0.6B-4bit-DWQ",
+        description="Model to use (full HuggingFace model name)"
     )
     encoding_format: Optional[str] = Field(
         default="float",
@@ -977,7 +949,7 @@ async def list_models():
     List available models and their status.
     
     Returns information about all available models,
-    their aliases, and current loading status.
+    their loading status and embedding dimensions.
     """
     return model_manager.get_status()
 
@@ -1007,7 +979,7 @@ def main():
         description="Roo Code Indexer — MLX embedding server for macOS"
     )
     parser.add_argument("--model", default=None,
-                        help="Model to load at startup (name or alias: small, medium, large)")
+                        help="Model to load at startup (e.g. mlx-community/Qwen3-Embedding-4B-4bit-DWQ)")
     parser.add_argument("--port", type=int, default=None,
                         help="Port to listen on (default: 8000)")
     parser.add_argument("--host", default=None,
