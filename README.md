@@ -28,6 +28,10 @@ In Roo Code settings, set the embedding provider to OpenAI-compatible and point 
 http://localhost:8000/v1
 ```
 
+![Roo Code codebase indexing configuration](docs/roocode-config.png)
+
+*Example using `mlx-community/Qwen3-Embedding-8B-4bit-DWQ` (4096 dimensions). `mlx-community/Qwen3-Embedding-4B-4bit-DWQ` (2560 dimensions) is recommended for most use cases.*
+
 ## Available Models
 
 | Model | Embedding Dim | Size | Description |
